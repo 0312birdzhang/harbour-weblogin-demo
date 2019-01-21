@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import Sailfish.Silica 1.0
 import QtWebKit 3.0
+import QtWebKit.experimental 1.0
 
 Page {
     id: root
@@ -16,7 +17,11 @@ Page {
           header: PageHeader {
               title: qsTr('Login')
           }
+            
+          experimental.overview: true
+          experimental.userStyleSheets: [ (Theme.colorScheme == Theme.LightOnDark) ? Qt.resolvedUrl("./htmlViewer_Dark.css") : Qt.resolvedUrl("./htmlViewer_Light.css") ]
 
+          experimental.transparentBackground: true
           onLoadingChanged: {
               if (loadRequest.status === WebView.LoadSucceededStatus){
                   console.log(loadRequest.url.toString())
