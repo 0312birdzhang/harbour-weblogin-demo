@@ -20,17 +20,6 @@
     </message>
 </context>
 <context>
-    <name>SecondPage</name>
-    <message>
-        <source>Login</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not login. Please try again.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>harbour-weblogin-demo</name>
     <message>
         <source>Error</source>

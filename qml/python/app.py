@@ -120,7 +120,7 @@ class Api:
         try:
             if type(self.cache) is Cache:
                 if 'uid' in user:
-                    self.cache.set('user.id', user['id'])
+                    self.cache.set('user.uid', user['uid'])
                 if 'username' in user:
                     self.cache.set('user.username', user['username'])
                 if 'avatarUrl' in user:

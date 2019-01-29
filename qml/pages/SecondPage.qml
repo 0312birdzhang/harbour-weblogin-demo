@@ -12,12 +12,7 @@ Page {
     SilicaWebView {
           id: webview
           anchors.fill: parent
-//          url: 'https://wappass.baidu.com/passport'
 
-          header: PageHeader {
-              title: qsTr('Login')
-          }
-            
           experimental.overview: true
           experimental.userStyleSheets: [ (Theme.colorScheme == Theme.LightOnDark) ? Qt.resolvedUrl("./htmlViewer_Dark.css") : Qt.resolvedUrl("./htmlViewer_Light.css") ]
 
