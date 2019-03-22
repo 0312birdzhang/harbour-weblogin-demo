@@ -37,7 +37,7 @@ from datetime import datetime, timezone, timedelta
 from bs4 import BeautifulSoup
 from diskcache import Cache
 
-BASE_URL = 'https://sailfishos.club/'
+BASE_URL = 'https://sailfishos.club'
 TIMEZONE = timezone(timedelta(hours=2), 'Europe/Helsinki')
 HARBOUR_APP_NAME = 'harbour-sailfishclub'
 HOME = os.path.expanduser('~')
@@ -100,14 +100,11 @@ class Api:
         """
         Get user_id from username
         """
-        user_home_url = "http://tieba.baidu.com/home/main?un=%s" % (username, )
+        user_home_url = "%s/api/user/%s" % (BASE_URL, username )
         try:
             r = requests.get(user_home_url, timeout = 10)
-            user_info = r.text
-            # "home_user_id" : 120127382,
-            home_user_index = user_info.index("\"home_user_id\" : ") + len("\"home_user_id\" : ")
-            home_user_right_part = user_info[home_user_index:]
-            uid = home_user_right_part[:home_user_right_part.index(",")]
+            user_info = r.json
+            uid = user_info.uid
             return uid
         except:
             Utils.log(traceback.format_exc())
