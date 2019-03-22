@@ -37,9 +37,9 @@ from datetime import datetime, timezone, timedelta
 from bs4 import BeautifulSoup
 from diskcache import Cache
 
-BASE_URL = 'https://m.baidu.com/'
+BASE_URL = 'https://sailfishos.club/'
 TIMEZONE = timezone(timedelta(hours=2), 'Europe/Helsinki')
-HARBOUR_APP_NAME = 'harbour-weblogin-demo'
+HARBOUR_APP_NAME = 'harbour-sailfishclub'
 HOME = os.path.expanduser('~')
 XDG_DATA_HOME = os.environ.get('XDG_DATA_HOME', os.path.join(HOME, '.local', 'share'))
 XDG_CONFIG_HOME = os.environ.get('XDG_CONFIG_HOME', os.path.join(HOME, '.config'))
@@ -86,7 +86,7 @@ class Api:
 
         conn = sqlite3.connect(COOKIE_PATH)
         cursor = conn.cursor()
-        params = ('.baidu.comBDUSS',)
+        params = ('express.sid',)
         cursor.execute('SELECT * FROM cookies WHERE cookieId = ?', params)
         row = cursor.fetchone()
         if row is not None:
