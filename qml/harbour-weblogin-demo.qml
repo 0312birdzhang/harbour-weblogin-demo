@@ -8,7 +8,7 @@ ApplicationWindow
 {
     id: app
     property bool isLoggedIn: false
-    readonly property string siteUrl: "https://sailfishos.club"
+    readonly property string siteUrl: "https://forums.ubports.com"
     property string username: ''
     property string bduss: ''
     property string uid: ''

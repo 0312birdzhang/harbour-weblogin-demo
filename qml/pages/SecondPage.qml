@@ -18,36 +18,29 @@ Page {
           // express.sid
           experimental.transparentBackground: true
           onLoadingChanged: {
+              console.log(loadRequest.url.toString())
               if (loadRequest.status === WebView.LoadSucceededStatus){
-                  console.log(loadRequest.url.toString())
-                  if (loadRequest.url.toString().indexOf('https://sailfishos.club') > 0
-                   && loadRequest.url.toString().indexOf("https://sailfishos.club/login") < 1
-                  ){
-                      webview.experimental.evaluateJavaScript(root.getUserInfoScript, function(rs){
-                          if (rs && rs.name){
-                              py.call('app.api.get_other_param', [rs.name, rs.avatar], function(ret){
-                                  if (ret){
-                                      app.isLoggedIn = true;
-                                      app.bduss = ret.bduss;
-                                      app.uid = ret.uid;
-                                      app.username = rs.name;
-                                      app.avatarUrl = rs.avatar
-                                      pageStack.pop()
-                                  }
-                              })
-                          }else{
-                              notification.error("Login failed")
-                              pageStack.pop();
-                          }
-                      })
-                  }
+                  webview.experimental.evaluateJavaScript(root.getUserInfoScript, function(rs){
+                      if (rs && rs.name){
+                          py.call('app.api.get_other_param', [rs.name, rs.avatar], function(ret){
+                              if (ret){
+                                  app.isLoggedIn = true;
+                                  app.bduss = ret.bduss;
+                                  app.uid = ret.uid;
+                                  app.username = rs.name;
+                                  app.avatarUrl = rs.avatar
+                                  pageStack.pop()
+                              }
+                          })
+                      }
+                  })
               }
           }
       }
 
     property string getUserInfoScript: "(function(){
-var userName = document.getElementById("user-header-name").innerText;
-var avatar = document.getElementById("user_dropdown").childNodes[1].src;
+var userName = document.getElementById('user-header-name').innerText;
+var avatar = document.getElementById('user_dropdown').childNodes[1].src;
 var res = {avatar: avatar, name: userName};
 return res;
 })()"

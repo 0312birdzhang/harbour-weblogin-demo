@@ -37,9 +37,10 @@ from datetime import datetime, timezone, timedelta
 from bs4 import BeautifulSoup
 from diskcache import Cache
 
-BASE_URL = 'https://sailfishos.club'
+DOMAIN_NAME = 'forums.ubports.com'
+BASE_URL = 'https://%s' % (DOMAIN_NAME, )
 TIMEZONE = timezone(timedelta(hours=2), 'Europe/Helsinki')
-HARBOUR_APP_NAME = 'harbour-sailfishclub'
+HARBOUR_APP_NAME = 'harbour-weblogin-demo'
 HOME = os.path.expanduser('~')
 XDG_DATA_HOME = os.environ.get('XDG_DATA_HOME', os.path.join(HOME, '.local', 'share'))
 XDG_CONFIG_HOME = os.environ.get('XDG_CONFIG_HOME', os.path.join(HOME, '.config'))
@@ -86,25 +87,26 @@ class Api:
 
         conn = sqlite3.connect(COOKIE_PATH)
         cursor = conn.cursor()
-        params = ('express.sid',)
+        params = ('%sexpress.sid' % (DOMAIN_NAME, ),)
         cursor.execute('SELECT * FROM cookies WHERE cookieId = ?', params)
         row = cursor.fetchone()
         if row is not None:
             cookie = SimpleCookie()
             cookie.load(row[1].decode('utf-8'))
             for cookie_name, morsel in cookie.items():
-                if cookie_name == 'BDUSS':
-                    return morsel.value    
+                if cookie_name == 'express.sid':
+                    return morsel.value
     
     def get_user_id_from_username(self, username):
+        Utils.log(username)
         """
         Get user_id from username
         """
         user_home_url = "%s/api/user/%s" % (BASE_URL, username )
         try:
             r = requests.get(user_home_url, timeout = 10)
-            user_info = r.json
-            uid = user_info.uid
+            user_info = r.json()
+            uid = user_info.get("uid")
             return uid
         except:
             Utils.log(traceback.format_exc())
