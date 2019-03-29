@@ -37,7 +37,8 @@ from datetime import datetime, timezone, timedelta
 from bs4 import BeautifulSoup
 from diskcache import Cache
 
-DOMAIN_NAME = 'forums.ubports.com'
+#DOMAIN_NAME = 'forums.ubports.com'
+DOMAIN_NAME = 'sailfishos.club'
 BASE_URL = 'https://%s' % (DOMAIN_NAME, )
 TIMEZONE = timezone(timedelta(hours=2), 'Europe/Helsinki')
 HARBOUR_APP_NAME = 'harbour-weblogin-demo'
@@ -59,12 +60,12 @@ class Api:
             Utils.log(traceback.format_exc())
             self.cache = None
 
-    def get_other_param(self, username, avatarUrl):
+    def get_other_param(self, username):
         """
         Get BDUSS and uid
         """
         bduss = self.get_session_id_from_cookie()
-        uid = self.get_user_id_from_username(username)
+        uid, avatarUrl = self.get_user_id_from_username(username)
         user = {}
         if bduss and uid:
             user['uid'] = uid
@@ -74,7 +75,8 @@ class Api:
             self.set_logged_in_user(user)
             return {
                 "bduss": bduss,
-                "uid": uid
+                "uid": uid,
+                "avatar": avatarUrl
             }
         else:
             return None
@@ -107,7 +109,10 @@ class Api:
             r = requests.get(user_home_url, timeout = 10)
             user_info = r.json()
             uid = user_info.get("uid")
-            return uid
+            avatarUrl = user_info.get("cover:url")
+            if not avatarUrl.startswith("http"):
+                avatarUrl = "%s%s" % (BASE_URL, avatarUrl)
+            return uid, avatarUrl
         except:
             Utils.log(traceback.format_exc())
             utils.error('Could not login. Please try again.')
@@ -148,6 +153,22 @@ class Api:
                 user['bduss'] = self.cache.get('user.bduss')
                 user['avatarUrl'] = self.cache.get('user.avatarUrl')
                 return user
+
+    def do_logout(self):
+        """
+        Logout by clear cookie
+        """
+
+        self.sessionId = ''
+        self.userId = 0
+
+        # Clear WebKit cookies DB
+        if os.path.exists(COOKIE_PATH):
+            os.remove(COOKIE_PATH)
+
+        # Clear cache
+        if type(self.cache) is Cache:
+            self.cache.clear()
 
 class Utils:
     def __init__(self):

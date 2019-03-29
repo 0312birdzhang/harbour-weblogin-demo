@@ -8,7 +8,8 @@ ApplicationWindow
 {
     id: app
     property bool isLoggedIn: false
-    readonly property string siteUrl: "https://forums.ubports.com"
+    readonly property string siteDomain: "sailfishos.club"
+    readonly property string siteUrl: "https://" + siteDomain
     property string username: ''
     property string bduss: ''
     property string uid: ''
@@ -50,6 +51,7 @@ ApplicationWindow
                     if (rs && rs.username){
                         app.isLoggedIn = true
                         app.username = rs.username
+                        app.bduss = rs.bduss;
                         app.uid = rs.uid
                         app.avatarUrl = rs.avatarUrl
                     }

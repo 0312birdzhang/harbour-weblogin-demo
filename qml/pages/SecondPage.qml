@@ -22,13 +22,13 @@ Page {
               if (loadRequest.status === WebView.LoadSucceededStatus){
                   webview.experimental.evaluateJavaScript(root.getUserInfoScript, function(rs){
                       if (rs && rs.name){
-                          py.call('app.api.get_other_param', [rs.name, rs.avatar], function(ret){
+                          py.call('app.api.get_other_param', [rs.name], function(ret){
                               if (ret){
                                   app.isLoggedIn = true;
                                   app.bduss = ret.bduss;
                                   app.uid = ret.uid;
                                   app.username = rs.name;
-                                  app.avatarUrl = rs.avatar
+                                  app.avatarUrl = ret.avatar
                                   pageStack.pop()
                               }
                           })
@@ -40,8 +40,7 @@ Page {
 
     property string getUserInfoScript: "(function(){
 var userName = document.getElementById('user-header-name').innerText;
-var avatar = document.getElementById('user_dropdown').childNodes[1].src;
-var res = {avatar: avatar, name: userName};
+var res = {name: userName};
 return res;
 })()"
 
