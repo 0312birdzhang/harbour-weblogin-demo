@@ -24,15 +24,16 @@ Page {
         experimental.customLayoutWidth: {
             return root.width * 0.6
         }
-        experimental.overview: true
         //   experimental.userStyleSheets: [ (Theme.colorScheme == Theme.LightOnDark) ? Qt.resolvedUrl("./htmlViewer_Dark.css") : Qt.resolvedUrl("./htmlViewer_Light.css") ]
-          experimental.transparentBackground: true
           onLoadingChanged: {
               console.log(loadRequest.url.toString())
               if (loadRequest.status === WebView.LoadSucceededStatus){
                   webview.experimental.evaluateJavaScript(root.getUserInfoScript, function(rs){
+                      console.log("exced getUserInfoScript")
                       if (rs && rs.name){
+                          console.log("start get other info")
                           py.call('app.api.get_other_param', [rs.name], function(ret){
+                              console.log("exced get_other_param")
                               if (ret){
                                   app.isLoggedIn = true;
                                   app.bduss = ret.bduss;
@@ -49,13 +50,14 @@ Page {
       }
 
     property string getUserInfoScript: "(function(){
-var userName = document.getElementById('user-header-name').innerText;
+var userName = document.getElementsByClassName('top')[0].href.split('member/')[1];
 var res = {name: userName};
+console.log(userName);
 return res;
 })()"
 
     Component.onCompleted: {
-        var url = app.siteUrl + "/login"
+        var url = app.siteUrl + "/signin"
         webview.url = url;
     }
 }

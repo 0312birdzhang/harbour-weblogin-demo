@@ -53,7 +53,7 @@ Page {
             }
 
             Label{
-                text: "bduss: " + ( app.bduss || "")
+                text: "A2: " + ( app.bduss || "")
                 width: parent.width
                 wrapMode: Text.WrapAnywhere
                 font.pixelSize: Theme.fontSizeSmall

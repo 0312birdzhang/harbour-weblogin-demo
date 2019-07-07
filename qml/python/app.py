@@ -37,8 +37,7 @@ from datetime import datetime, timezone, timedelta
 from bs4 import BeautifulSoup
 from diskcache import Cache
 
-#DOMAIN_NAME = 'forums.ubports.com'
-DOMAIN_NAME = 'sailfishos.club'
+DOMAIN_NAME = 'v2ex.com'
 BASE_URL = 'https://%s' % (DOMAIN_NAME, )
 TIMEZONE = timezone(timedelta(hours=2), 'Europe/Helsinki')
 HARBOUR_APP_NAME = 'harbour-weblogin-demo'
@@ -64,6 +63,7 @@ class Api:
         """
         Get BDUSS and uid
         """
+        Utils.log("start get other param")
         bduss = self.get_session_id_from_cookie()
         uid, avatarUrl = self.get_user_id_from_username(username)
         user = {}
@@ -89,14 +89,14 @@ class Api:
 
         conn = sqlite3.connect(COOKIE_PATH)
         cursor = conn.cursor()
-        params = ('%sexpress.sid' % (DOMAIN_NAME, ),)
+        params = ('.%sA2' % (DOMAIN_NAME),)
         cursor.execute('SELECT * FROM cookies WHERE cookieId = ?', params)
         row = cursor.fetchone()
         if row is not None:
             cookie = SimpleCookie()
             cookie.load(row[1].decode('utf-8'))
             for cookie_name, morsel in cookie.items():
-                if cookie_name == 'express.sid':
+                if cookie_name == 'A2':
                     return morsel.value
     
     def get_user_id_from_username(self, username):
@@ -104,14 +104,14 @@ class Api:
         """
         Get user_id from username
         """
-        user_home_url = "%s/api/user/%s" % (BASE_URL, username )
+        user_home_url = "%s/api/members/show.json?username=%s" % (BASE_URL, username )
         try:
             r = requests.get(user_home_url, timeout = 10)
             user_info = r.json()
-            uid = user_info.get("uid")
-            avatarUrl = user_info.get("cover:url")
-            if not avatarUrl.startswith("http"):
-                avatarUrl = "%s%s" % (BASE_URL, avatarUrl)
+            uid = user_info.get("id")
+            avatarUrl = user_info.get("avatar_normal")
+            if avatarUrl.startswith("//"):
+                avatarUrl = "http:" + avatarUrl
             return uid, avatarUrl
         except:
             Utils.log(traceback.format_exc())
